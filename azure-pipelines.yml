@@ -6,22 +6,23 @@ trigger:
 pool:
   name: javashpool
   demands:
-  - agent.name -equals   javashagent
+    - agent.name -equals javashagent
 
 stages:
-  - stage: 
-    displayName: 'maven compile'
+  - stage: mavenCompile # Stage name should ideally have a unique identifier.
+    displayName: 'Maven Compile'
     jobs:
-      - job: "compile"
+      - job: compile
+        displayName: 'Compile Maven Project' # Adding a displayName for the job for clarity.
         steps:
-        - task: Maven@4
-          inputs:
-            mavenPomFile: 'Boardgame/pom.xml'
-            goals: 'compile'
-            publishJUnitResults: true
-            testResultsFiles: '**/surefire-reports/TEST-*.xml'
-            javaHomeOption: 'JDKVersion'
-            mavenVersionOption: 'Default'
-            mavenAuthenticateFeed: false
-            effectivePomSkip: false
-            sonarQubeRunAnalysis: false
+          - task: Maven@3 # Maven version is typically 3 in Azure DevOps (double-check compatibility).
+            inputs:
+              mavenPomFile: 'Boardgame/pom.xml'
+              goals: 'compile'
+              publishJUnitResults: true
+              testResultsFiles: '**/surefire-reports/TEST-*.xml'
+              javaHomeOption: 'Path' # Consider using 'Path' if you're defining a specific JDK.
+              mavenVersionOption: 'Default' # Correct if you’re not specifying an exact Maven version.
+              mavenAuthenticateFeed: false
+              effectivePomSkip: true # It is better to skip effective POM generation unless required.
+              sonarQubeRunAnalysis: false
