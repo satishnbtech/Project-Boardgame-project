@@ -4,19 +4,40 @@ trigger:
   none
 
 pool:
-  name: dockerpool
+  name: javashpool
   demands:
-  - agent.name -equals   dockeragent
+  - agent.name -equals   javashagent
 
 stages:
-  - stage: docker_build
+  - stage: 
+    displayName: 'maven compile'
     jobs:
-      - job: "docker_build"
+      - job: "compile"
         steps:
-        - task: DockerCompose@1
+        - task: Maven@4
           inputs:
-            containerregistrytype: 'Azure Container Registry'
-            azureSubscription: 'ACR-TO-Pipeline'
-            azureContainerRegistry: '{"loginServer":"classregistry.azurecr.io", "id" : "/subscriptions/c58c123c-4245-4723-a096-5ee1f90682a5/resourceGroups/ACR-grp/providers/Microsoft.ContainerRegistry/registries/classregistry"}'
-            dockerComposeFile: '**/docker-compose.yml'
-            action: 'Run a Docker Compose command'
+            mavenPomFile: 'Boardgame/pom.xml'
+            goals: 'compile'
+            publishJUnitResults: true
+            testResultsFiles: '**/surefire-reports/TEST-*.xml'
+            javaHomeOption: 'JDKVersion'
+            mavenVersionOption: 'Default'
+            mavenAuthenticateFeed: false
+            effectivePomSkip: false
+            sonarQubeRunAnalysis: false
+  - stage: 
+    displayName: 'maven package'
+    jobs:
+      - job: "package"
+        steps:
+        - task: Maven@4
+          inputs:
+            azureSubscription: 'Free Trial(9316ffff-5798-4604-8dce-fc0fc04595f9)'
+            mavenPomFile: 'Boardgame/pom.xml'
+            publishJUnitResults: true
+            testResultsFiles: '**/surefire-reports/TEST-*.xml'
+            javaHomeOption: 'JDKVersion'
+            mavenVersionOption: 'Default'
+            mavenAuthenticateFeed: false
+            effectivePomSkip: false
+            sonarQubeRunAnalysis: false
