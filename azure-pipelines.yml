@@ -25,19 +25,3 @@ stages:
             mavenAuthenticateFeed: false
             effectivePomSkip: false
             sonarQubeRunAnalysis: false
-  - stage: 
-    displayName: 'maven package'
-    jobs:
-      - job: "package"
-        steps:
-        - task: Maven@4
-          inputs:
-            azureSubscription: 'Free Trial(9316ffff-5798-4604-8dce-fc0fc04595f9)'
-            mavenPomFile: 'Boardgame/pom.xml'
-            publishJUnitResults: true
-            testResultsFiles: '**/surefire-reports/TEST-*.xml'
-            javaHomeOption: 'JDKVersion'
-            mavenVersionOption: 'Default'
-            mavenAuthenticateFeed: false
-            effectivePomSkip: false
-            sonarQubeRunAnalysis: false
