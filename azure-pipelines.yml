@@ -17,7 +17,24 @@ stages:
         steps:
         - task: Maven@4
           inputs:
-            azureSubscription: 'Free Trial(9316ffff-5798-4604-8dce-fc0fc04595f9)'
+            mavenPomFile: 'Boardgame/pom.xml'
+            goals: 'compile'
+            publishJUnitResults: true
+            testResultsFiles: '**/surefire-reports/TEST-*.xml'
+            javaHomeOption: 'JDKVersion'
+            mavenVersionOption: 'Default'
+            mavenAuthenticateFeed: false
+            effectivePomSkip: false
+            sonarQubeRunAnalysis: false
+
+  - stage: mavenPackage # Stage name should ideally have a unique identifier.
+    displayName: 'Maven Package'
+    jobs:
+      - job: package
+        displayName: 'package Maven Project' # Adding a displayName for the job for clarity.
+        steps:
+        - task: Maven@4
+          inputs:
             mavenPomFile: 'Boardgame/pom.xml'
             publishJUnitResults: true
             testResultsFiles: '**/surefire-reports/TEST-*.xml'
@@ -26,3 +43,6 @@ stages:
             mavenAuthenticateFeed: false
             effectivePomSkip: false
             sonarQubeRunAnalysis: false
+
+
+
